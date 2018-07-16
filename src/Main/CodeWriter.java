@@ -6,6 +6,23 @@ import java.io.IOException;
 public class CodeWriter {
 	private FileOutputStream file = null;
 	
+	//TODO
+	//AM=M-1 is wrong, fix later
+	private static final byte[] add = "//add\n@SP\nAM=M-1\nD=M\nA=A-1\nM=M+D\n".getBytes();
+	private static final byte[] sub = "//sub\n@SP\nAM=M-1\nD=M\nA=A-1\nM=M-D\n".getBytes();
+	private static final byte[] neg = "//neg\n@SP\nA=M-1\nM=-M\n".getBytes();
+	
+	//TODO
+	//Not implemented yet
+	private static final byte[] eq = "//eq\n@SP\nAM=M-1\nD=M\nA=A-1\nM=M-D\n".getBytes();
+	private static final byte[] gt = "//gt\n@SP\nAM=M-1\nD=M\nA=A-1\nM=M-D\n".getBytes();
+	private static final byte[] lt = "//gt\n@SP\nAM=M-1\nD=M\nA=A-1\nM=M-D\n".getBytes();
+	
+	private static final byte[] and = "//and\n@SP\nAM=M-1\nD=M\nA=A-1\nM=M&D\n".getBytes();
+	private static final byte[] or = "//or\n@SP\nAM=M-1\nD=M\nA=A-1\nM=M|D\n".getBytes();
+	private static final byte[] not = "//not\n@SP\nA=M-1\nM=!M\n".getBytes();
+	
+	
 	/**
 	 * Opens the output file and gets ready to write into it
 	 */
@@ -25,7 +42,36 @@ public class CodeWriter {
 	 * @param command
 	 */
 	public void writeArithmetic(String command) {
-		byte[] temp = command.getBytes();
+		byte[] temp = null;
+		switch(command) {
+			case "add":
+				temp = add;
+				break;
+			case "sub":
+				temp = sub;
+				break;
+			case "neg":
+				temp = neg;
+				break;
+			case "eq":
+				temp = eq;
+				break;
+			case "gt":
+				temp = gt;
+				break;
+			case "lt":
+				temp = lt;
+				break;
+			case "and":
+				temp = and;
+				break;
+			case "or":
+				temp = or;
+				break;
+			case "not":
+				temp = not;
+				break;
+		}
 		try {
 			this.file.write(temp);
 		} catch (IOException e) {
@@ -41,8 +87,12 @@ public class CodeWriter {
 	 * @param segment
 	 * @param index
 	 */
-	public void writePushPop(char type, String segment, int index) {
-		
+	public void writePushPop(byte type, String segment, int index) {
+		if(type==Parser.C_PUSH) {
+			
+		}else if(type==Parser.C_POP) {
+			
+		}
 	}
 	
 	public void close() {

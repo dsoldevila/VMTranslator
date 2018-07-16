@@ -1,7 +1,8 @@
 package Main;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.io.IOException;
+import java.io.BufferedReader;
+import java.io.FileNotFoundException;
 
 
 /**
@@ -25,10 +26,10 @@ public class Parser {
 	public static final byte C_RETURNN = 7;
 	public static final byte C_CALL = 8;
 	
-	private FileInputStream file = null;
+	private BufferedReader file = null;
 	private String current_command = null;
 	private String next_command = null;
-	private byte[] code_line = new byte[20];
+	//private byte[] code_line = new byte[20];
 	private byte current_type;
 	
 	/**
@@ -37,7 +38,7 @@ public class Parser {
 	 */
 	public Parser(String file_name) {
 		try {
-			this.file = new FileInputStream(file_name);
+			this.file = new BufferedReader(new FileReader(file_name));
 		} catch (FileNotFoundException e) {
 			System.out.println("ERROR: Input file not found");
 		}
@@ -51,14 +52,13 @@ public class Parser {
 		
 		boolean more_commands = true;
 		try {
-			if(this.file.read(code_line)<0)
+			if((this.next_command=this.file.readLine())==null)
 				more_commands = false;
+			else {
+				this.next_command=this.next_command.trim();
+			}
 		} catch (IOException e) {
-			System.out.println("ERROR: Couldn't read command");
-		}
-		if(more_commands) {
-			this.next_command = new String(code_line);
-			//this.next_command = this.next_command.trim();
+			System.out.println("ERROR: Can't read file");
 		}
 		
 		return more_commands;
@@ -77,14 +77,15 @@ public class Parser {
 	
 	/**
 	 * 
-	 * @return type of the current command
+	 * @return type of the current command, if it's not a valid type (empty line or comment), it 
+	 * returns -1
 	 */
 	public byte commandType() {
 		String temp = null;
 		if(this.current_command.contains(" ")) {
 			temp = this.current_command.substring(0, this.current_command.indexOf(" "));
 		}else {
-			temp = this.current_command.trim();
+			temp = this.current_command;
 		}
 		byte type = -1;
 		switch(temp) {
@@ -120,7 +121,9 @@ public class Parser {
 	public String arg1() {
 		String temp = null;
 		if(current_type==C_ARITHMETIC) {
-			temp = this.current_command.trim();
+			temp = this.current_command;
+			if(temp.contains(" "))
+				temp = temp.substring(0, temp.indexOf(" "));
 		}else if(current_type==C_PUSH || current_type==C_POP) {
 			temp = this.current_command.substring(this.current_command.indexOf(" ")+1);
 			temp = temp.substring(0, temp.indexOf(" "));
@@ -139,7 +142,6 @@ public class Parser {
 		if(current_type==C_PUSH || current_type==C_POP) {
 			temp = this.current_command.substring(this.current_command.indexOf(" ")+1);
 			temp = temp.substring(temp.indexOf(" ")+1);
-			temp = temp.trim();
 		}
 		return temp;
 	}

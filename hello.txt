@@ -1,3 +1,4 @@
-
-push constant 89
-
+add //comment
+sub
+and
+or
