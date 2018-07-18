@@ -1,4 +1,6 @@
-add //comment
-sub
-and
-or
+push local 1
+push constant 2
+pop static 3
+push argument 4
+add
+

@@ -145,5 +145,13 @@ public class Parser {
 		}
 		return temp;
 	}
+	
+	public void close() {
+		try {
+			this.file.close();
+		} catch (IOException e) {
+			System.out.println("ERROR: Error at closing the output file");
+		}
+	}
 
 }
