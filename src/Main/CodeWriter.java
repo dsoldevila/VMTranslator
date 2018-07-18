@@ -46,7 +46,7 @@ public class CodeWriter {
 		} catch (FileNotFoundException e) {
 			System.out.println("ERROR: Output can't be used or created");
 		}		
-		this.file_name = file_name.substring(0, file_name.indexOf(" ")-1);
+		this.file_name = file_name.substring(0, file_name.indexOf("."));
 		
 	}
 	
@@ -125,7 +125,7 @@ public class CodeWriter {
 				index = "@"+index+"\n";
 				break;
 			case "static":
-				index = this.file_name+"."+index;
+				index = "@"+this.file_name+"."+index+"\n";
 				has_segment = false;
 				break;
 			case "constant":
@@ -141,7 +141,7 @@ public class CodeWriter {
 		
 		if(type==Parser.C_PUSH) {
 			if(has_segment) { //arg, local, this, that
-				temp = "//Push\n"+segment+"D=A"+index+"A=D+A\nD=M\n"+SP+"A=M\nM=D\n"+SP+"M=M+1\n";
+				temp = "//Push\n"+segment+"D=A\n"+index+"A=D+A\nD=M\n"+SP+"A=M\nM=D\n"+SP+"M=M+1\n";
 			}else if(is_constant){ //constant
 				temp = "//Push\n"+index+"D=A\n"+SP+"A=M\n"+"M=D\n"+SP+"M=M+1\n";
 			}else { //static or temp
@@ -150,11 +150,16 @@ public class CodeWriter {
 			
 		}else if(type==Parser.C_POP) {
 			if(has_segment) {
-				temp = "//Pop\n"+segment+"D=A"+index+"D=A+D"+SP+"A=M"+"M=D"+"A=A-1"+"D=M"+SP+"A=M"+
-						"A=M"+"M=D"+SP+"M=M-1";
+				temp = "//Pop\n"+segment+"D=A\n"+index+"D=A+D\n"+SP+"A=M\n"+"M=D\n"+"A=A-1\n"+"D=M\n"+SP+"A=M\n"+
+						"A=M\n"+"M=D\n"+SP+"M=M-1\n";
 			}else {
 				temp = "//Pop\n"+SP+"AM=M-1\nD=M\n"+index+"M=D\n";
 			}
+		}
+		try {
+			this.file.write(temp.getBytes());
+		} catch (IOException e) {
+			System.out.println("ERROR: Couldn't write on output file");
 		}
 	}
 	

@@ -8,7 +8,7 @@ public class VMTranslator {
 	public static void main (String[] arguments) {
 		String input_file_name = arguments[0];
 		System.out.println(input_file_name);
-		String output_file_name = input_file_name.substring(0, input_file_name.indexOf(".")-1);
+		String output_file_name = input_file_name.substring(0, input_file_name.indexOf("."));
 		output_file_name = output_file_name + ".asm";
 		Parser Par = new Parser(arguments[0]);
 		CodeWriter Writer = new CodeWriter(output_file_name);
