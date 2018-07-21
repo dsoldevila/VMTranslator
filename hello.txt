@@ -1,6 +1,3 @@
-push local 1
-push constant 2
-pop static 3
-push argument 4
+push local 2
+push argument 3
 add
-
