@@ -1,3 +1,0 @@
-push local 2
-push argument 3
-add

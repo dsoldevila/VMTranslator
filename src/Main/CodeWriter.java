@@ -34,8 +34,8 @@ public class CodeWriter {
 	private static final String THAT = "@THAT";
 	private static final String LOCAL = "@LCL";
 	//temp == 5+i
-	//Static == Filename
-	//constant == nothing
+	//Static == Filename.i
+	//constant == i
 	
 	
 	
@@ -147,7 +147,7 @@ public class CodeWriter {
 		}
 		if(type==Parser.C_PUSH) {
 			if(has_segment) { //arg, local, this, that
-				String[] t = {"//Push", segment, "D=A", index, "A=D+A", "D=M", SP, "A=M", "M=D", SP, "M=M+1"};
+				String[] t = {"//Push", segment, "D=M", index, "A=D+A", "D=M", SP, "A=M", "M=D", SP, "M=M+1"};
 				temp = t.clone();
 			}else if(is_constant){ //constant
 				String[] t = {"//Push", index, "D=A", SP, "A=M", "M=D", SP, "M=M+1"};
@@ -159,13 +159,14 @@ public class CodeWriter {
 			
 		}else if(type==Parser.C_POP) {
 			if(has_segment) {
-				String[] t = {"//Pop", segment, "D=A", index, "D=A+D", SP, "A=M", "M=D", "A=A-1", "D=M", SP, "A=M",	"A=M", "M=D", SP, "M=M-1"};
+				String[] t = {"//Pop", segment, "D=M", index, "D=A+D", SP, "A=M", "M=D", SP, "AM=M-1", "D=M", SP, "A=M+1", "A=M", "M=D"};
 				temp = t.clone();
-				}
 			}else {
 				String[] t = {"//Pop", SP, "AM=M-1", "D=M", index, "M=D"};
 				temp = t.clone();
 			}
+		}
+		
 		try {
 			for(int i=0; i<temp.length; i++) {
 				this.file.write(temp[i]);

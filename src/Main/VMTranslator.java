@@ -3,7 +3,7 @@ package Main;
 
 public class VMTranslator {
 	private static byte type;
-	private static char a;
+	private static int a;
 	
 	public static void main (String[] arguments) {
 		String input_file_name = arguments[0];
@@ -12,11 +12,11 @@ public class VMTranslator {
 		output_file_name = output_file_name + ".asm";
 		Parser Par = new Parser(input_file_name);
 		CodeWriter Writer = new CodeWriter(output_file_name);
-		a = '0';
+		a = 0;
 		while(Par.hasMoreCommands()) {
 			Par.advance();
 			if((type = Par.commandType())!=-1) {
-				System.out.println("iter: "+a);
+				System.out.println("iter: "+String.valueOf(a));
 				System.out.println(type);
 				System.out.println(Par.arg1());
 				if(type==Parser.C_ARITHMETIC) {
