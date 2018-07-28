@@ -25,9 +25,9 @@ public class CodeWriter {
 	/*CONDITIONALS*/
 	private static final String[] eq = {"//eq", SP, "AM=M-1", "D=M", SP, "AM=M-1", "D=D-M", "M=0", "@LABEL_n", "D;JNE", SP, "A=M", "M=-1", 
 			"(LABEL_n)", SP, "M=M+1"};
-	private static final String[] gt = {"//eq", SP, "AM=M-1", "D=M", SP, "AM=M-1", "D=D-M", "M=0", "@LABEL_n", "D;JLT", SP, "A=M", "M=-1", 
+	private static final String[] gt = {"//gt", SP, "AM=M-1", "D=M", SP, "AM=M-1", "D=M-D", "M=0", "@LABEL_n", "D;JLE", SP, "A=M", "M=-1", 
 			"(LABEL_n)", SP, "M=M+1"};
-	private static final String[] lt = {"//eq", SP, "AM=M-1", "D=M", SP, "AM=M-1", "D=D-M", "M=0", "@LABEL_n", "D;JGT", SP, "A=M", "M=-1", 
+	private static final String[] lt = {"//lt", SP, "AM=M-1", "D=M", SP, "AM=M-1", "D=M-D", "M=0", "@LABEL_n", "D;JGE", SP, "A=M", "M=-1", 
 			"(LABEL_n)", SP, "M=M+1"};
 	
 	private int label_counter;
