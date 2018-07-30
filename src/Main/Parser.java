@@ -6,8 +6,8 @@ import java.io.FileNotFoundException;
 
 
 /**
- * Handles the parsinf of a single .vm file
- * Reads a VM command, parses it into tis lexical components and provides
+ * Handles the parsing of a single .vm file
+ * Reads a VM command, parses it into its lexical components and provides
  * convenient acces to these components
  * Ignores all white space and comments
  * @author David
@@ -27,9 +27,9 @@ public class Parser {
 	public static final byte C_CALL = 8;
 	
 	private BufferedReader file = null;
+	
 	private String current_command = null;
 	private String next_command = null;
-	//private byte[] code_line = new byte[20];
 	private byte current_type;
 	
 	/**
@@ -134,7 +134,7 @@ public class Parser {
 	
 	/**
 	 * 
-	 * @return The second agument of the current_command.
+	 * @return The second argument of the current_command.
 	 * Only Called if current_command is C_PUSH, C_POP, C_FUNCTION, C_CALL
 	 */
 	public String arg2() {

@@ -1,4 +1,4 @@
-//Push
+//Push constant 17
 @17
 D=A
 @SP
@@ -6,7 +6,7 @@ A=M
 M=D
 @SP
 M=M+1
-//Push
+//Push constant 17
 @17
 D=A
 @SP
@@ -30,7 +30,7 @@ M=-1
 (LABEL_0)
 @SP
 M=M+1
-//Push
+//Push constant 17
 @17
 D=A
 @SP
@@ -38,7 +38,7 @@ A=M
 M=D
 @SP
 M=M+1
-//Push
+//Push constant 16
 @16
 D=A
 @SP
@@ -62,7 +62,7 @@ M=-1
 (LABEL_1)
 @SP
 M=M+1
-//Push
+//Push constant 16
 @16
 D=A
 @SP
@@ -70,7 +70,7 @@ A=M
 M=D
 @SP
 M=M+1
-//Push
+//Push constant 17
 @17
 D=A
 @SP
@@ -94,7 +94,7 @@ M=-1
 (LABEL_2)
 @SP
 M=M+1
-//Push
+//Push constant 892
 @892
 D=A
 @SP
@@ -102,7 +102,7 @@ A=M
 M=D
 @SP
 M=M+1
-//Push
+//Push constant 891
 @891
 D=A
 @SP
@@ -126,7 +126,7 @@ M=-1
 (LABEL_3)
 @SP
 M=M+1
-//Push
+//Push constant 891
 @891
 D=A
 @SP
@@ -134,7 +134,7 @@ A=M
 M=D
 @SP
 M=M+1
-//Push
+//Push constant 892
 @892
 D=A
 @SP
@@ -158,7 +158,7 @@ M=-1
 (LABEL_4)
 @SP
 M=M+1
-//Push
+//Push constant 891
 @891
 D=A
 @SP
@@ -166,7 +166,7 @@ A=M
 M=D
 @SP
 M=M+1
-//Push
+//Push constant 891
 @891
 D=A
 @SP
@@ -190,7 +190,7 @@ M=-1
 (LABEL_5)
 @SP
 M=M+1
-//Push
+//Push constant 32767
 @32767
 D=A
 @SP
@@ -198,7 +198,7 @@ A=M
 M=D
 @SP
 M=M+1
-//Push
+//Push constant 32766
 @32766
 D=A
 @SP
@@ -222,7 +222,7 @@ M=-1
 (LABEL_6)
 @SP
 M=M+1
-//Push
+//Push constant 32766
 @32766
 D=A
 @SP
@@ -230,7 +230,7 @@ A=M
 M=D
 @SP
 M=M+1
-//Push
+//Push constant 32767
 @32767
 D=A
 @SP
@@ -254,7 +254,7 @@ M=-1
 (LABEL_7)
 @SP
 M=M+1
-//Push
+//Push constant 32766
 @32766
 D=A
 @SP
@@ -262,7 +262,7 @@ A=M
 M=D
 @SP
 M=M+1
-//Push
+//Push constant 32766
 @32766
 D=A
 @SP
@@ -286,7 +286,7 @@ M=-1
 (LABEL_8)
 @SP
 M=M+1
-//Push
+//Push constant 57
 @57
 D=A
 @SP
@@ -294,7 +294,7 @@ A=M
 M=D
 @SP
 M=M+1
-//Push
+//Push constant 31
 @31
 D=A
 @SP
@@ -302,7 +302,7 @@ A=M
 M=D
 @SP
 M=M+1
-//Push
+//Push constant 53
 @53
 D=A
 @SP
@@ -316,7 +316,7 @@ AM=M-1
 D=M
 A=A-1
 M=M+D
-//Push
+//Push constant 112
 @112
 D=A
 @SP
@@ -340,7 +340,7 @@ AM=M-1
 D=M
 A=A-1
 M=M&D
-//Push
+//Push constant 82
 @82
 D=A
 @SP
@@ -348,7 +348,7 @@ A=M
 M=D
 @SP
 M=M+1
-//and
+//or
 @SP
 AM=M-1
 D=M
