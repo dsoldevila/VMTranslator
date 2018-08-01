@@ -16,6 +16,8 @@ import java.io.FileNotFoundException;
 public class Parser {
 	
 	/*Command Types*/
+	public static final byte C_OLD = -2;
+	public static final byte C_NULL = -1;
 	public static final byte C_ARITHMETIC = 0;
 	public static final byte C_PUSH = 1;
 	public static final byte C_POP = 2;
@@ -23,7 +25,7 @@ public class Parser {
 	public static final byte C_GOTO = 4;
 	public static final byte C_IF = 5;
 	public static final byte C_FUNCTION = 6;
-	public static final byte C_RETURNN = 7;
+	public static final byte C_RETURN = 7;
 	public static final byte C_CALL = 8;
 	
 	private BufferedReader file = null;
@@ -42,6 +44,7 @@ public class Parser {
 		} catch (FileNotFoundException e) {
 			System.out.println("ERROR: Input file not found");
 		}
+		this.current_type = C_OLD;
 	}
 	
 	/**
@@ -72,6 +75,7 @@ public class Parser {
 	 */
 	public void advance () {
 		this.current_command = this.next_command;
+		this.current_type = C_OLD;
 		
 	}
 	
@@ -87,7 +91,7 @@ public class Parser {
 		}else {
 			temp = this.current_command;
 		}
-		byte type = -1;
+		byte type = C_NULL;
 		switch(temp) {
 			case "add":
 			case "sub":
@@ -106,6 +110,24 @@ public class Parser {
 			case "push":
 				type = C_PUSH;
 				break;
+			case "label":
+				type = C_LABEL;
+				break;
+			case "goto":
+				type = C_GOTO;
+				break;
+			case "if":
+				type = C_IF;
+				break;
+			case "function":
+				type = C_FUNCTION;
+				break;
+			case "return":
+				type = C_RETURN;
+				break;
+			case "call":
+				type = C_CALL;
+				break;
 		
 		}
 		this.current_type = type;
@@ -120,6 +142,30 @@ public class Parser {
 	 */
 	public String arg1() {
 		String temp = null;
+		if(current_type==C_OLD) //if type hasn't been updated
+			commandType();
+		
+		switch(this.current_type) {
+			case C_ARITHMETIC: //one word command, ex: add
+				temp = this.current_command;
+				if(temp.contains(" "))
+					temp = temp.substring(0, temp.indexOf(" "));
+				break;
+			case C_LABEL: //2 word command, ex: label END
+			case C_GOTO:
+			case C_IF:
+				temp = this.current_command.substring(this.current_command.indexOf(" ")+1);
+				break;
+			case C_PUSH: //3 word command, ex: push argument 4, function Foo 4
+			case C_POP:
+			case C_FUNCTION:
+			case C_CALL:
+				temp = this.current_command.substring(this.current_command.indexOf(" ")+1);
+				temp = temp.substring(0, temp.indexOf(" "));
+				break;
+		
+		}
+		/*
 		if(current_type==C_ARITHMETIC) {
 			temp = this.current_command;
 			if(temp.contains(" "))
@@ -128,7 +174,7 @@ public class Parser {
 			temp = this.current_command.substring(this.current_command.indexOf(" ")+1);
 			temp = temp.substring(0, temp.indexOf(" "));
 		}
-		
+		*/
 		return temp;	
 	}
 	
@@ -139,7 +185,9 @@ public class Parser {
 	 */
 	public String arg2() {
 		String temp = null;
-		if(current_type==C_PUSH || current_type==C_POP) {
+		if(current_type==C_OLD) //if type hasn't been updated
+			commandType();
+		if(current_type==C_PUSH || current_type==C_POP || current_type==C_FUNCTION || current_type==C_CALL) {
 			temp = this.current_command.substring(this.current_command.indexOf(" ")+1);
 			temp = temp.substring(temp.indexOf(" ")+1);
 		}

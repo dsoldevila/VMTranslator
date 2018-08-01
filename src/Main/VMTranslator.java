@@ -15,7 +15,7 @@ public class VMTranslator {
 		a = 0;
 		while(Par.hasMoreCommands()) {
 			Par.advance();
-			if((type = Par.commandType())!=-1) {
+			if((type = Par.commandType())!=Parser.C_NULL) {
 				System.out.println("iter: "+String.valueOf(a));
 				System.out.println(type);
 				System.out.println(Par.arg1());
