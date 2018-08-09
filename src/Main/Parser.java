@@ -116,7 +116,7 @@ public class Parser {
 			case "goto":
 				type = C_GOTO;
 				break;
-			case "if":
+			case "if-goto":
 				type = C_IF;
 				break;
 			case "function":
@@ -155,6 +155,8 @@ public class Parser {
 			case C_GOTO:
 			case C_IF:
 				temp = this.current_command.substring(this.current_command.indexOf(" ")+1);
+				if(temp.contains(" ")) //if it still has whitespace, there is a comment 
+					temp = temp.substring(0, temp.indexOf(" "));
 				break;
 			case C_PUSH: //3 word command, ex: push argument 4, function Foo 4
 			case C_POP:
@@ -190,6 +192,8 @@ public class Parser {
 		if(current_type==C_PUSH || current_type==C_POP || current_type==C_FUNCTION || current_type==C_CALL) {
 			temp = this.current_command.substring(this.current_command.indexOf(" ")+1);
 			temp = temp.substring(temp.indexOf(" ")+1);
+			if(temp.contains(" ")) //if it still has whitespace, there is a comment 
+				temp = temp.substring(0, temp.indexOf(" "));
 		}
 		return temp;
 	}

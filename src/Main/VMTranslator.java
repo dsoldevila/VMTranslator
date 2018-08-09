@@ -19,6 +19,37 @@ public class VMTranslator {
 				System.out.println("iter: "+String.valueOf(a));
 				System.out.println(type);
 				System.out.println(Par.arg1());
+				switch(Par.commandType()) {
+					case Parser.C_ARITHMETIC:
+						Writer.writeArithmetic(Par.arg1());
+						break;
+					case Parser.C_LABEL:
+						Writer.writeLabel(Par.arg1());
+						break;
+					case Parser.C_GOTO:
+						Writer.writeGoto(Par.arg1());
+						break;
+					case Parser.C_IF:
+						Writer.writeIf(Par.arg1());
+						break;
+					case Parser.C_PUSH:
+					case Parser.C_POP:
+						System.out.println(Par.arg2());
+						Writer.writePushPop(type, Par.arg1(), Par.arg2());
+						break;
+					case Parser.C_FUNCTION:
+						break;
+					case Parser.C_CALL:
+						break;
+			
+				}
+				a++;
+			}
+			/*
+			if((type = Par.commandType())!=Parser.C_NULL) {
+				System.out.println("iter: "+String.valueOf(a));
+				System.out.println(type);
+				System.out.println(Par.arg1());
 				if(type==Parser.C_ARITHMETIC) {
 					Writer.writeArithmetic(Par.arg1());
 				}
@@ -28,6 +59,7 @@ public class VMTranslator {
 				}
 				a++;
 			}
+			*/
 		}
 		//CodeWriter CodeWriter = new CodeWriter("write.txt");
 	}

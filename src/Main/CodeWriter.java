@@ -2,8 +2,6 @@ package Main;
 import java.io.FileWriter;
 import java.io.BufferedWriter;
 import java.io.IOException;
-import java.util.Arrays;
-
 
 public class CodeWriter {
 	
@@ -32,8 +30,8 @@ public class CodeWriter {
 	private static final String[] lt = {SP, "AM=M-1", "D=M", SP, "AM=M-1", "D=M-D", "M=0", "@LABEL_n", "D;JGE", SP, "A=M", "M=-1", 
 			"(LABEL_n)", SP, "M=M+1"};
 	
-	private int label_counter;
-	String label; 
+	private int conditional_lab_count;
+	String conditional_label; 
 	
 	/*LOGICAL*/
 	private static final String[] and = {SP, "AM=M-1", "D=M", "A=A-1", "M=M&D"};
@@ -64,7 +62,7 @@ public class CodeWriter {
 		}		
 		this.file_name = file_name.substring(0, file_name.indexOf("."));
 		
-		label_counter = 0;
+		conditional_lab_count = 0;
 		
 	}
 	
@@ -76,7 +74,7 @@ public class CodeWriter {
 	 */
 	public void writeArithmetic(String command) {
 		String[] temp = null;
-		label = "LABEL_"+ String.valueOf(label_counter); 
+		conditional_label = "LABEL_"+ String.valueOf(conditional_lab_count); 
 		
 		switch(command) {
 			case "add":
@@ -90,21 +88,21 @@ public class CodeWriter {
 				break;
 			case "eq":
 				temp = eq.clone();
-				temp[7] = "@"+label;
-				temp[12] = "("+label+")";
-				label_counter++;
+				temp[7] = "@"+conditional_label;
+				temp[12] = "("+conditional_label+")";
+				conditional_lab_count++;
 				break;
 			case "gt":
 				temp = gt.clone();
-				temp[7] = "@"+label;
-				temp[12] = "("+label+")";
-				label_counter++;
+				temp[7] = "@"+conditional_label;
+				temp[12] = "("+conditional_label+")";
+				conditional_lab_count++;
 				break;
 			case "lt":
 				temp = lt.clone();
-				temp[7] = "@"+label;
-				temp[12] = "("+label+")";
-				label_counter++;
+				temp[7] = "@"+conditional_label;
+				temp[12] = "("+conditional_label+")";
+				conditional_lab_count++;
 				break;
 			case "and":
 				temp = and;
@@ -126,7 +124,7 @@ public class CodeWriter {
 			this.file.flush();
 			
 		} catch (IOException e) {
-			System.out.println("ERROR: Can't output command");
+			System.out.println("ERROR: Couldn't write ARITHMETIC COM on output file\"");
 		}
 		
 	}
@@ -221,15 +219,22 @@ public class CodeWriter {
 			}
 			this.file.flush();
 		} catch (IOException e) {
-			System.out.println("ERROR: Couldn't write on output file");
+			System.out.println("ERROR: Couldn't write PUSH/POP on output file");
 		}
-}
+	}
 	
 	/**
 	 * Informs the codeWrtier that the translation of a new VM file has started.
 	 * @param name
 	 */
 	public void setFileName(String name) {
+		this.close();
+		try {
+			this.file = new BufferedWriter(new FileWriter(file_name));
+		} catch (IOException e) {
+			System.out.println("ERROR: Output can't be used or created");
+		}		
+		this.file_name = file_name.substring(0, file_name.indexOf("."));
 		
 	}
 	
@@ -246,7 +251,17 @@ public class CodeWriter {
 	 * @param string
 	 */
 	public void writeLabel(String string) {
-		
+		String[] temp = {"//Label", "@"+string};
+		try {
+			for(int i = 0; i<temp.length; i++) {
+				this.file.write(temp[i]);
+				this.file.newLine();
+			}
+			this.file.flush();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			System.out.println("ERROR: Couldn't write LABEL on output file");
+		}
 	}
 	
 	/**
@@ -254,7 +269,17 @@ public class CodeWriter {
 	 * @param string
 	 */
 	public void writeGoto(String string) {
-			
+		String[] temp = {"//Goto", "@"+string, "JMP"};
+		try {
+			for(int i = 0; i<temp.length; i++) {
+				this.file.write(temp[i]);
+				this.file.newLine();
+			}
+			this.file.flush();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			System.out.println("ERROR: Couldn't write LABEL on output file");
+		}
 	}
 	
 	/**
@@ -262,7 +287,17 @@ public class CodeWriter {
 	 * @param string
 	 */
 	public void writeIf(String string) {
-		
+		String[] temp = {"//If-goto", SP, "AM=M-1", "D=M", "@"+string, "D;JNE"};
+		try {
+			for(int i = 0; i<temp.length; i++) {
+				this.file.write(temp[i]);
+				this.file.newLine();
+			}
+			this.file.flush();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			System.out.println("ERROR: Couldn't write LABEL on output file");
+		}
 	}
 	
 	/**
