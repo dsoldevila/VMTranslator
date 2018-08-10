@@ -167,16 +167,6 @@ public class Parser {
 				break;
 		
 		}
-		/*
-		if(current_type==C_ARITHMETIC) {
-			temp = this.current_command;
-			if(temp.contains(" "))
-				temp = temp.substring(0, temp.indexOf(" "));
-		}else if(current_type==C_PUSH || current_type==C_POP) {
-			temp = this.current_command.substring(this.current_command.indexOf(" ")+1);
-			temp = temp.substring(0, temp.indexOf(" "));
-		}
-		*/
 		return temp;	
 	}
 	

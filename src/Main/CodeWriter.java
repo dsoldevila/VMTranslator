@@ -251,7 +251,7 @@ public class CodeWriter {
 	 * @param string
 	 */
 	public void writeLabel(String string) {
-		String[] temp = {"//Label", "@"+string};
+		String[] temp = {"//Label", "("+string+")"};
 		try {
 			for(int i = 0; i<temp.length; i++) {
 				this.file.write(temp[i]);
@@ -269,7 +269,7 @@ public class CodeWriter {
 	 * @param string
 	 */
 	public void writeGoto(String string) {
-		String[] temp = {"//Goto", "@"+string, "JMP"};
+		String[] temp = {"//Goto", "@"+string, "D;JMP"};
 		try {
 			for(int i = 0; i<temp.length; i++) {
 				this.file.write(temp[i]);
@@ -277,7 +277,6 @@ public class CodeWriter {
 			}
 			this.file.flush();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			System.out.println("ERROR: Couldn't write LABEL on output file");
 		}
 	}
@@ -295,7 +294,6 @@ public class CodeWriter {
 			}
 			this.file.flush();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			System.out.println("ERROR: Couldn't write LABEL on output file");
 		}
 	}
@@ -305,8 +303,32 @@ public class CodeWriter {
 	 * @param string
 	 * @param numVars
 	 */
-	public void writeFunction(String string, int numVars) {
-		
+	public void writeFunction(String function_name, String numVars) {
+		int nV = Integer.parseInt(numVars);
+		try {
+			this.file.write("("+function_name+")");  //writes label, aka function pointer
+			this.file.newLine();
+			
+			//init local variables to 0
+			for(int i = 0; i<nV; i++) {
+				this.file.write("push constant 0"); 
+				this.file.newLine();
+			}
+			
+			//endFrame = LCL
+			this.writePushPop(Parser.C_PUSH, "local", "0");
+			this.writePushPop(Parser.C_POP, "temp", "0");
+			
+			//retAddr = *(endFrame-5)
+			this.writePushPop(Parser.C_PUSH, "temp", "0");  
+			this.writePushPop(Parser.C_PUSH, "constant", "5");
+			this.writeArithmetic("sub"); //TODO mirar l'ordre de la resta
+			
+			
+			
+		} catch (IOException e) {
+			System.out.println("ERROR: Couldn't write FUNCTION on output file");
+		}
 	}
 	
 	/**
@@ -314,7 +336,7 @@ public class CodeWriter {
 	 * @param string
 	 * @param numArgs
 	 */
-	public void writeCall(String string, int numArgs) {
+	public void writeCall(String string, String numArgs) {
 			
 		}
 
