@@ -102,7 +102,7 @@ A=M+1
 A=M
 M=D
 //Label
-(MAIN_LOOP_START)
+(FibonacciSeries.MAIN_LOOP_START)
 //Push argument 0
 @ARG
 D=M
@@ -118,13 +118,13 @@ M=M+1
 @SP
 AM=M-1
 D=M
-@COMPUTE_ELEMENT
+@FibonacciSeries.COMPUTE_ELEMENT
 D;JNE
 //Goto
-@END_PROGRAM
+@FibonacciSeries.END_PROGRAM
 D;JMP
 //Label
-(COMPUTE_ELEMENT)
+(FibonacciSeries.COMPUTE_ELEMENT)
 //Push that 0
 @THAT
 D=M
@@ -237,7 +237,7 @@ A=M+1
 A=M
 M=D
 //Goto
-@MAIN_LOOP_START
+@FibonacciSeries.MAIN_LOOP_START
 D;JMP
 //Label
-(END_PROGRAM)
+(FibonacciSeries.END_PROGRAM)

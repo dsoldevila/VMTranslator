@@ -7,6 +7,7 @@ public class CodeWriter {
 	
 	private BufferedWriter file = null;
 	private String file_name; //without extension
+	private String function_name = null;
 	
 	/*STACK POINTER*/
 	private static final String SP = "@SP";
@@ -30,7 +31,7 @@ public class CodeWriter {
 	private static final String[] lt = {SP, "AM=M-1", "D=M", SP, "AM=M-1", "D=M-D", "M=0", "@LABEL_n", "D;JGE", SP, "A=M", "M=-1", 
 			"(LABEL_n)", SP, "M=M+1"};
 	
-	private int conditional_lab_count;
+	private int conditional_lab_count; //both used to generate "built-in" labels for eq,gt,lt ops
 	String conditional_label; 
 	
 	/*LOGICAL*/
@@ -248,13 +249,20 @@ public class CodeWriter {
 	
 	/**
 	 * Writes the assembly code that effects the label command.
-	 * @param string
+	 * @param label
 	 */
-	public void writeLabel(String string) {
-		String[] temp = {"//Label", "("+string+")"};
+	public void writeLabel(String label) {
+		String[] code = null;
+		if(this.function_name==null) { //if the code it's not in a function
+			String[] temp = {"//Label", "("+this.file_name+"."+label+")"};
+			code = temp.clone();
+		}else {
+			String[] temp = {"//Label", "("+this.file_name+"."+this.function_name+"$"+label+")"};
+			code = temp.clone();
+		}
 		try {
-			for(int i = 0; i<temp.length; i++) {
-				this.file.write(temp[i]);
+			for(int i = 0; i<code.length; i++) {
+				this.file.write(code[i]);
 				this.file.newLine();
 			}
 			this.file.flush();
@@ -266,13 +274,18 @@ public class CodeWriter {
 	
 	/**
 	 * 
-	 * @param string
+	 * @param label
 	 */
-	public void writeGoto(String string) {
-		String[] temp = {"//Goto", "@"+string, "D;JMP"};
+	public void writeGoto(String label) {
+		if(this.function_name==null) { //if the code it's not in a function
+			label = "@"+this.file_name+"."+label;
+		}else {
+			label = "@"+this.file_name+"."+this.function_name+"$"+label;
+		}
+		String[] code = {"//Goto", label, "D;JMP"};
 		try {
-			for(int i = 0; i<temp.length; i++) {
-				this.file.write(temp[i]);
+			for(int i = 0; i<code.length; i++) {
+				this.file.write(code[i]);
 				this.file.newLine();
 			}
 			this.file.flush();
@@ -283,13 +296,18 @@ public class CodeWriter {
 	
 	/**
 	 * 
-	 * @param string
+	 * @param label
 	 */
-	public void writeIf(String string) {
-		String[] temp = {"//If-goto", SP, "AM=M-1", "D=M", "@"+string, "D;JNE"};
+	public void writeIf(String label) {
+		if(this.function_name==null) { //if the code it's not in a function
+			label = "@"+this.file_name+"."+label;
+		}else {
+			label = "@"+this.file_name+"."+this.function_name+"$"+label;
+		}
+		String[] code = {"//If-goto", SP, "AM=M-1", "D=M", label, "D;JNE"};
 		try {
-			for(int i = 0; i<temp.length; i++) {
-				this.file.write(temp[i]);
+			for(int i = 0; i<code.length; i++) {
+				this.file.write(code[i]);
 				this.file.newLine();
 			}
 			this.file.flush();
@@ -299,14 +317,15 @@ public class CodeWriter {
 	}
 	
 	/**
-	 * 
-	 * @param string
+	 * Writes function Label and pushes numVars 0 to stack to init Local variables
+	 * @param function_name
 	 * @param numVars
 	 */
 	public void writeFunction(String function_name, String numVars) {
 		int nV = Integer.parseInt(numVars);
+		this.function_name = function_name;
 		try {
-			this.file.write("("+function_name+")");  //writes label, aka function pointer
+			this.file.write("("+this.file_name+"."+function_name+")");  //writes label, aka function pointer
 			this.file.newLine();
 			
 			//init local variables to 0
@@ -314,15 +333,6 @@ public class CodeWriter {
 				this.file.write("push constant 0"); 
 				this.file.newLine();
 			}
-			
-			//endFrame = LCL
-			this.writePushPop(Parser.C_PUSH, "local", "0");
-			this.writePushPop(Parser.C_POP, "temp", "0");
-			
-			//retAddr = *(endFrame-5)
-			this.writePushPop(Parser.C_PUSH, "temp", "0");  
-			this.writePushPop(Parser.C_PUSH, "constant", "5");
-			this.writeArithmetic("sub"); //TODO mirar l'ordre de la resta
 			
 			
 			
@@ -344,6 +354,42 @@ public class CodeWriter {
 	 * 
 	 */
 	public void writeReturn() {
+		try {
+			/* EndFrame = LCL */
+			String[] ef_code = {"//Return", LOCAL, "D=M", SP, "A=M", "M=D", SP, "M=M+1"}; //Push local start address to the stack
+			for(int i = 0; i<ef_code.length; i++) {
+				this.file.write(ef_code[i]);
+				this.file.newLine();
+			} 
+			this.writePushPop(Parser.C_POP, "temp", "0"); //EndFrame = temp 0
+			
+			/* retAddr = *(EndFrame-5)*/
+			this.writePushPop(Parser.C_PUSH, "temp", "0");
+			this.writePushPop(Parser.C_PUSH, "constant", "5");
+			this.writeArithmetic("sub");
+			this.writePushPop(Parser.C_POP, "temp", "1"); //retAddr = temp 1
+			
+			/* *ARG = return value*/
+			this.writePushPop(Parser.C_POP, "argument", "0");
+			
+			/*SP = ARG +1 */
+			String[] sp_code = {ARGUMENT, "D=M", "@1", "D=D+A", SP, "M=D"};
+			for(int i = 0; i<sp_code.length; i++) {
+				this.file.write(sp_code[i]);
+				this.file.newLine();
+			}
+			
+			/* THAT = *(EndFrame-1)*/ //TODO
+			this.writePushPop(Parser.C_PUSH, "temp", "0");
+			this.writePushPop(Parser.C_PUSH, "constant", "1");
+			this.writeArithmetic("sub");
+			String[] that_code = {SP, "D=M", THAT, "M=D"};
+			
+		} catch (IOException e) {
+			System.out.println("ERROR: Couldn't write RETURN on output file");
+		} 
+		
+		
 		
 	}
 	
