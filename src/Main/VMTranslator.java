@@ -44,6 +44,7 @@ public class VMTranslator {
 						Writer.writeFunction(Par.arg1(), Par.arg2());
 						break;
 					case Parser.C_CALL:
+						Writer.writeCall(Par.arg1(), Par.arg2());
 						break;
 					case Parser.C_RETURN:
 						Writer.writeReturn();

@@ -50,6 +50,9 @@ public class CodeWriter {
 	//constant == i
 	//pointer 0/1 (THIS/THAT)
 	
+	/*FUNCTION*/
+	private int return_count;
+	
 	
 	
 	
@@ -65,7 +68,8 @@ public class CodeWriter {
 		}		
 		this.file_name = file_name.substring(0, file_name.indexOf("."));
 		
-		conditional_lab_count = 0;
+		this.conditional_lab_count = 0;
+		this.return_count = 0;
 		
 	}
 	
@@ -238,6 +242,8 @@ public class CodeWriter {
 			System.out.println("ERROR: Output can't be used or created");
 		}		
 		this.file_name = file_name.substring(0, file_name.indexOf("."));
+		this.return_count = 0;
+		this.conditional_lab_count = 0;
 		
 	}
 	
@@ -327,8 +333,8 @@ public class CodeWriter {
 		int nV = Integer.parseInt(numVars);
 		this.function_name = function_name;
 		try {
-			this.file.write("("+this.file_name+"."+function_name+")");  //writes label, aka function pointer
-			this.file.newLine();
+			this.writeString("//Function "+function_name+" "+numVars);
+			this.writeString("("+this.file_name+"."+function_name+")");  //writes label, aka function pointer
 			
 			//init local variables to 0
 			for(int i = 0; i<nV; i++) {
@@ -340,19 +346,54 @@ public class CodeWriter {
 		} catch (IOException e) {
 			System.out.println("ERROR: Couldn't write FUNCTION on output file");
 		}
+		this.return_count = 0;
+		this.conditional_lab_count = 0;
 	}
 	
 	/**
-	 * 
-	 * @param string
+	 * Saves the caller function's stack, sets up the ARG and LCL memory segment, writes a label aka return point and
+	 * jumps to the callee function
+	 * @param function_name
 	 * @param numArgs
 	 */
-	public void writeCall(String string, String numArgs) {
+	public void writeCall(String function_name, String numArgs) {
+		this.return_count++;
+		String r_count = String.valueOf(this.return_count);
+		
+		this.writeString("//Call "+function_name+" "+numArgs);
+		
+		/* SAVE STATE */
+		/* Push return address */
+		String return_label = this.file_name+"."+function_name+"$"+"ret."+r_count;
+		String[] addr_push = {"@"+return_label, "D=A",  SP, "A=M", "M=D", SP, "M=M+1"};
+		this.writeString(addr_push);
+		/* Push LCL */
+		String[] lcl_push = {LOCAL, "D=M", SP, "A=M", "M=D", SP, "M=M+1"};
+		this.writeString(lcl_push);
+		/* Push ARG */
+		String[] arg_push = {ARGUMENT, "D=M", SP, "A=M", "M=D", SP, "M=M+1"};
+		this.writeString(arg_push);
+		/* Push THIS */
+		String[] this_push = {THIS, "D=M", SP, "A=M", "M=D", SP, "M=M+1"};
+		this.writeString(this_push);
+		/* Push THAT */
+		String[] that_push = {THAT, "D=M", SP, "A=M", "M=D", SP, "M=M+1"};
+		this.writeString(that_push);
+		
+		/* SET MEMORY SEGMENTS */
+		String[] arg_relloc = {SP, "D=M", "@5", "D=D-A", "@"+numArgs, "D=D-A", ARGUMENT, "M=D"};
+		this.writeString(arg_relloc);
+		String[] lcl_relloc = {SP, "D=M", LOCAL, "M=D"};
+		this.writeString(lcl_relloc);
+		
+		/*SET RETURN POINT*/
+		this.writeString("("+return_label+")");
+		
 			
-		}
+	}
 
 	/**
-	 * 
+	 * Restores the stack of the caller function and writes the return value on top of the stack
 	 */
 	public void writeReturn() {
 		/* EndFrame = LCL */
@@ -406,12 +447,27 @@ public class CodeWriter {
 		}
 	}
 	
+	/**
+	 * Prints the code on the output file
+	 * @param code
+	 */
 	public void writeString(String[] code) {
 		try {
 			for(int i = 0; i<code.length; i++) {
 				this.file.write(code[i]);
 				this.file.newLine();
 			}
+			this.file.flush();
+		} catch (IOException e) {
+			System.out.println("ERROR: Error at writing on output file");
+		}
+			
+	}
+	
+	public void writeString(String string) {
+		try {
+			this.file.write(string);
+			this.file.newLine();
 			this.file.flush();
 		} catch (IOException e) {
 			System.out.println("ERROR: Error at writing on output file");
