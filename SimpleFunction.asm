@@ -158,7 +158,7 @@ D=M
 @2
 A=D-A
 D=M
-@THAT
+@THIS
 M=D
 //r_arg
 @5
@@ -166,7 +166,7 @@ D=M
 @3
 A=D-A
 D=M
-@THAT
+@ARG
 M=D
 //r_lcl
 @5
@@ -174,7 +174,7 @@ D=M
 @4
 A=D-A
 D=M
-@THAT
+@LCL
 M=D
 @6
 A=M

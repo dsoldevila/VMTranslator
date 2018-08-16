@@ -379,15 +379,15 @@ public class CodeWriter {
 		this.writeString(that_code);
 		
 		/* THIS = *(EndFrame-2)*/	
-		String[] this_code = {"//r_this", "@5", "D=M", "@2", "A=D-A", "D=M", THAT, "M=D"};
+		String[] this_code = {"//r_this", "@5", "D=M", "@2", "A=D-A", "D=M", THIS, "M=D"};
 		this.writeString(this_code);
 		
 		/* ARG = *(EndFrame-3)*/
-		String[] arg_code = {"//r_arg", "@5", "D=M", "@3", "A=D-A", "D=M", THAT, "M=D"};
+		String[] arg_code = {"//r_arg", "@5", "D=M", "@3", "A=D-A", "D=M", ARGUMENT, "M=D"};
 		this.writeString(arg_code);
 		
 		/* LCL = *(EndFrame-4)*/
-		String[] lcl_code = {"//r_lcl", "@5", "D=M", "@4", "A=D-A", "D=M", THAT, "M=D"};
+		String[] lcl_code = {"//r_lcl", "@5", "D=M", "@4", "A=D-A", "D=M", LOCAL, "M=D"};
 		this.writeString(lcl_code);
 		
 		/* goto retAddr (temp 1 aka @6)*/
