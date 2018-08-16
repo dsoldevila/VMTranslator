@@ -51,6 +51,8 @@ public class CodeWriter {
 	//pointer 0/1 (THIS/THAT)
 	
 	
+	
+	
 	/**
 	 * Opens the output file and gets ready to write into it
 	 * @param file_name
@@ -330,11 +332,10 @@ public class CodeWriter {
 			
 			//init local variables to 0
 			for(int i = 0; i<nV; i++) {
-				this.file.write("push constant 0"); 
-				this.file.newLine();
+				this.writePushPop(Parser.C_PUSH, "constant", "0");
 			}
 			
-			
+			this.file.flush();
 			
 		} catch (IOException e) {
 			System.out.println("ERROR: Couldn't write FUNCTION on output file");
@@ -354,40 +355,44 @@ public class CodeWriter {
 	 * 
 	 */
 	public void writeReturn() {
-		try {
-			/* EndFrame = LCL */
-			String[] ef_code = {"//Return", LOCAL, "D=M", SP, "A=M", "M=D", SP, "M=M+1"}; //Push local start address to the stack
-			for(int i = 0; i<ef_code.length; i++) {
-				this.file.write(ef_code[i]);
-				this.file.newLine();
-			} 
-			this.writePushPop(Parser.C_POP, "temp", "0"); //EndFrame = temp 0
-			
-			/* retAddr = *(EndFrame-5)*/
-			this.writePushPop(Parser.C_PUSH, "temp", "0");
-			this.writePushPop(Parser.C_PUSH, "constant", "5");
-			this.writeArithmetic("sub");
-			this.writePushPop(Parser.C_POP, "temp", "1"); //retAddr = temp 1
-			
-			/* *ARG = return value*/
-			this.writePushPop(Parser.C_POP, "argument", "0");
-			
-			/*SP = ARG +1 */
-			String[] sp_code = {ARGUMENT, "D=M", "@1", "D=D+A", SP, "M=D"};
-			for(int i = 0; i<sp_code.length; i++) {
-				this.file.write(sp_code[i]);
-				this.file.newLine();
-			}
-			
-			/* THAT = *(EndFrame-1)*/ //TODO
-			this.writePushPop(Parser.C_PUSH, "temp", "0");
-			this.writePushPop(Parser.C_PUSH, "constant", "1");
-			this.writeArithmetic("sub");
-			String[] that_code = {SP, "D=M", THAT, "M=D"};
-			
-		} catch (IOException e) {
-			System.out.println("ERROR: Couldn't write RETURN on output file");
-		} 
+		/* EndFrame = LCL */
+		String[] ef_code = {"//Return", LOCAL, "D=M", SP, "A=M", "M=D", SP, "M=M+1"}; //Push local start address to the stack
+		this.writeString(ef_code);
+
+		this.writePushPop(Parser.C_POP, "temp", "0"); //EndFrame = temp 0
+		
+		/* retAddr = *(EndFrame-5)*/
+		this.writePushPop(Parser.C_PUSH, "temp", "0");
+		this.writePushPop(Parser.C_PUSH, "constant", "5");
+		this.writeArithmetic("sub");
+		this.writePushPop(Parser.C_POP, "temp", "1"); //retAddr = temp 1
+		
+		/* *ARG = return value*/
+		this.writePushPop(Parser.C_POP, "argument", "0");
+		
+		/*SP = ARG +1 */
+		String[] sp_code = {ARGUMENT, "D=M", "@1", "D=D+A", SP, "M=D"};
+		this.writeString(sp_code);
+		
+		/* THAT = *(EndFrame-1) (endFrame == temp 0 aka @5)*/
+		String[] that_code = {"//r_that", "@5", "D=M", "@1", "A=D-A", "D=M", THAT, "M=D"};
+		this.writeString(that_code);
+		
+		/* THIS = *(EndFrame-2)*/	
+		String[] this_code = {"//r_this", "@5", "D=M", "@2", "A=D-A", "D=M", THAT, "M=D"};
+		this.writeString(this_code);
+		
+		/* ARG = *(EndFrame-3)*/
+		String[] arg_code = {"//r_arg", "@5", "D=M", "@3", "A=D-A", "D=M", THAT, "M=D"};
+		this.writeString(arg_code);
+		
+		/* LCL = *(EndFrame-4)*/
+		String[] lcl_code = {"//r_lcl", "@5", "D=M", "@4", "A=D-A", "D=M", THAT, "M=D"};
+		this.writeString(lcl_code);
+		
+		/* goto retAddr (temp 1 aka @6)*/
+		String[] goto_code = {"@6", "A=M", "A=M", "D;JMP"};
+		this.writeString(goto_code); 
 		
 		
 		
@@ -399,6 +404,19 @@ public class CodeWriter {
 		} catch (IOException e) {
 			System.out.println("ERROR: Error at closing the output file");
 		}
+	}
+	
+	public void writeString(String[] code) {
+		try {
+			for(int i = 0; i<code.length; i++) {
+				this.file.write(code[i]);
+				this.file.newLine();
+			}
+			this.file.flush();
+		} catch (IOException e) {
+			System.out.println("ERROR: Error at writing on output file");
+		}
+			
 	}
 }
 

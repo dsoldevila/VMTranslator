@@ -18,7 +18,9 @@ public class VMTranslator {
 			if((type = Par.commandType())!=Parser.C_NULL) {
 				System.out.println("iter: "+String.valueOf(a));
 				System.out.println(type);
-				System.out.println(Par.arg1());
+				if(type!=Parser.C_RETURN) {
+					System.out.println(Par.arg1());
+				}
 				switch(Par.commandType()) {
 					case Parser.C_ARITHMETIC:
 						Writer.writeArithmetic(Par.arg1());
@@ -38,8 +40,13 @@ public class VMTranslator {
 						Writer.writePushPop(type, Par.arg1(), Par.arg2());
 						break;
 					case Parser.C_FUNCTION:
+						System.out.println(Par.arg2());
+						Writer.writeFunction(Par.arg1(), Par.arg2());
 						break;
 					case Parser.C_CALL:
+						break;
+					case Parser.C_RETURN:
+						Writer.writeReturn();
 						break;
 			
 				}
