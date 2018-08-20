@@ -1,5 +1,5 @@
 //Function Sys.init 0
-(Sys.Sys.init)
+(Sys.init)
 //Push constant 4000	
 @4000	
 D=A
@@ -29,7 +29,7 @@ D=M
 @THAT
 M=D
 //Call Sys.main 0
-@Sys.Sys.main$ret.1
+@Sys.main$ret.1
 D=A
 @SP
 A=M
@@ -76,7 +76,9 @@ M=D
 D=M
 @LCL
 M=D
-(Sys.Sys.main$ret.1)
+@Sys.main
+D;JMP
+(Sys.main$ret.1)
 //Pop temp 1
 @SP
 AM=M-1
@@ -84,12 +86,12 @@ D=M
 @6
 M=D
 //Label
-(Sys.Sys.init$LOOP)
+(Sys.init$LOOP)
 //Goto
-@Sys.Sys.init$LOOP
+@Sys.init$LOOP
 D;JMP
 //Function Sys.main 5
-(Sys.Sys.main)
+(Sys.main)
 //Push constant 0
 @0
 D=A
@@ -236,7 +238,7 @@ M=D
 @SP
 M=M+1
 //Call Sys.add12 1
-@Sys.Sys.add12$ret.1
+@Sys.add12$ret.1
 D=A
 @SP
 A=M
@@ -283,7 +285,9 @@ M=D
 D=M
 @LCL
 M=D
-(Sys.Sys.add12$ret.1)
+@Sys.add12
+D;JMP
+(Sys.add12$ret.1)
 //Pop temp 0
 @SP
 AM=M-1
@@ -383,31 +387,10 @@ AM=M-1
 D=M
 @5
 M=D
-//Push temp 0
 @5
 D=M
-@SP
-A=M
-M=D
-@SP
-M=M+1
-//Push constant 5
-@5
-D=A
-@SP
-A=M
-M=D
-@SP
-M=M+1
-//sub
-@SP
-AM=M-1
-D=M
-A=A-1
-M=M-D
-//Pop temp 1
-@SP
-AM=M-1
+D=D-A
+A=D
 D=M
 @6
 M=D
@@ -466,10 +449,9 @@ D=M
 M=D
 @6
 A=M
-A=M
 D;JMP
 //Function Sys.add12 0
-(Sys.Sys.add12)
+(Sys.add12)
 //Push constant 4002
 @4002
 D=A
@@ -537,31 +519,10 @@ AM=M-1
 D=M
 @5
 M=D
-//Push temp 0
 @5
 D=M
-@SP
-A=M
-M=D
-@SP
-M=M+1
-//Push constant 5
-@5
-D=A
-@SP
-A=M
-M=D
-@SP
-M=M+1
-//sub
-@SP
-AM=M-1
-D=M
-A=A-1
-M=M-D
-//Pop temp 1
-@SP
-AM=M-1
+D=D-A
+A=D
 D=M
 @6
 M=D
@@ -619,6 +580,5 @@ D=M
 @LCL
 M=D
 @6
-A=M
 A=M
 D;JMP

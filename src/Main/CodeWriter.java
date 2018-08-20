@@ -265,7 +265,7 @@ public class CodeWriter {
 			String[] temp = {"//Label", "("+this.file_name+"."+label+")"};
 			code = temp.clone();
 		}else {
-			String[] temp = {"//Label", "("+this.file_name+"."+this.function_name+"$"+label+")"};
+			String[] temp = {"//Label", "("+this.function_name+"$"+label+")"};
 			code = temp.clone();
 		}
 		try {
@@ -288,7 +288,7 @@ public class CodeWriter {
 		if(this.function_name==null) { //if the code it's not in a function
 			label = "@"+this.file_name+"."+label;
 		}else {
-			label = "@"+this.file_name+"."+this.function_name+"$"+label;
+			label = "@"+this.function_name+"$"+label;
 		}
 		String[] code = {"//Goto", label, "D;JMP"};
 		try {
@@ -334,7 +334,7 @@ public class CodeWriter {
 		this.function_name = function_name;
 		try {
 			this.writeString("//Function "+function_name+" "+numVars);
-			this.writeString("("+this.file_name+"."+function_name+")");  //writes label, aka function pointer
+			this.writeString("("+function_name+")");  //writes label, aka function pointer
 			
 			//init local variables to 0
 			for(int i = 0; i<nV; i++) {
@@ -364,7 +364,7 @@ public class CodeWriter {
 		
 		/* SAVE STATE */
 		/* Push return address */
-		String return_label = this.file_name+"."+function_name+"$"+"ret."+r_count;
+		String return_label = function_name+"$"+"ret."+r_count;
 		String[] addr_push = {"@"+return_label, "D=A",  SP, "A=M", "M=D", SP, "M=M+1"};
 		this.writeString(addr_push);
 		/* Push LCL */
@@ -386,6 +386,10 @@ public class CodeWriter {
 		String[] lcl_relloc = {SP, "D=M", LOCAL, "M=D"};
 		this.writeString(lcl_relloc);
 		
+		/* JUMP to function */
+		String[] go_to = {"@"+function_name, "D;JMP"};
+		this.writeString(go_to);
+		
 		/*SET RETURN POINT*/
 		this.writeString("("+return_label+")");
 		
@@ -403,10 +407,8 @@ public class CodeWriter {
 		this.writePushPop(Parser.C_POP, "temp", "0"); //EndFrame = temp 0
 		
 		/* retAddr = *(EndFrame-5)*/
-		this.writePushPop(Parser.C_PUSH, "temp", "0");
-		this.writePushPop(Parser.C_PUSH, "constant", "5");
-		this.writeArithmetic("sub");
-		this.writePushPop(Parser.C_POP, "temp", "1"); //retAddr = temp 1
+		String[] retAddr_code = {"@5", "D=M", "D=D-A", "A=D", "D=M", "@6", "M=D"};
+		this.writeString(retAddr_code);
 		
 		/* *ARG = return value*/
 		this.writePushPop(Parser.C_POP, "argument", "0");
@@ -432,7 +434,7 @@ public class CodeWriter {
 		this.writeString(lcl_code);
 		
 		/* goto retAddr (temp 1 aka @6)*/
-		String[] goto_code = {"@6", "A=M", "A=M", "D;JMP"};
+		String[] goto_code = {"@6", "A=M", "D;JMP"};
 		this.writeString(goto_code); 
 		
 		
