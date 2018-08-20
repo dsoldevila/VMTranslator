@@ -70,6 +70,7 @@ public class CodeWriter {
 		
 		this.conditional_lab_count = 0;
 		this.return_count = 0;
+		this.writeInit();
 		
 	}
 	
@@ -252,6 +253,8 @@ public class CodeWriter {
 	 * the VM. THis code must be placed at the beginning of the generated *.asm file.
 	 */
 	public void writeInit() {
+		String[] bootstrap_code = {"@256", "D=A", SP, "M=D", "@Sys.init", "D;JMP"};
+		this.writeString(bootstrap_code);
 		
 	}
 	
