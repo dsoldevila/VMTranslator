@@ -1,3 +1,10 @@
+//BootStrap Code
+@256
+D=A
+@SP
+M=D
+@Sys.init
+D;JMP
 //Function Sys.init 0
 (Sys.init)
 //Push constant 4000	

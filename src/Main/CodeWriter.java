@@ -83,6 +83,11 @@ public class CodeWriter {
 	public void writeArithmetic(String command) {
 		String[] temp = null;
 		conditional_label = "LABEL_"+ String.valueOf(conditional_lab_count); 
+		if(this.function_name==null){
+			conditional_label = this.file_name+"."+conditional_label;
+		}else {
+			conditional_label = this.file_name+"."+this.function_name+"$"+conditional_label;
+		}
 		
 		switch(command) {
 			case "add":
@@ -235,13 +240,7 @@ public class CodeWriter {
 	 * Informs the codeWrtier that the translation of a new VM file has started.
 	 * @param name
 	 */
-	public void setFileName(String name) {
-		this.close();
-		try {
-			this.file = new BufferedWriter(new FileWriter(file_name));
-		} catch (IOException e) {
-			System.out.println("ERROR: Output can't be used or created");
-		}		
+	public void setFileName(String name) {	
 		this.file_name = file_name.substring(0, file_name.indexOf("."));
 		this.return_count = 0;
 		this.conditional_lab_count = 0;
@@ -253,7 +252,7 @@ public class CodeWriter {
 	 * the VM. THis code must be placed at the beginning of the generated *.asm file.
 	 */
 	public void writeInit() {
-		String[] bootstrap_code = {"@256", "D=A", SP, "M=D", "@Sys.init", "D;JMP"};
+		String[] bootstrap_code = {"//BootStrap Code", "@256", "D=A", SP, "M=D", "@Sys.init", "D;JMP"};
 		this.writeString(bootstrap_code);
 		
 	}
