@@ -241,7 +241,7 @@ public class CodeWriter {
 	 * @param name
 	 */
 	public void setFileName(String name) {	
-		this.file_name = file_name.substring(0, file_name.indexOf("."));
+		this.file_name = name.substring(0, name.indexOf("."));
 		this.return_count = 0;
 		this.conditional_lab_count = 0;
 		
@@ -366,7 +366,7 @@ public class CodeWriter {
 		
 		/* SAVE STATE */
 		/* Push return address */
-		String return_label = function_name+"$"+"ret."+r_count;
+		String return_label = this.function_name+"$"+"ret."+r_count;
 		String[] addr_push = {"@"+return_label, "D=A",  SP, "A=M", "M=D", SP, "M=M+1"};
 		this.writeString(addr_push);
 		/* Push LCL */
