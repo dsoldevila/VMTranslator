@@ -46,7 +46,7 @@ M=M+1
 @SP
 AM=M-1
 D=M
-@FibonacciElement.Main.fibonacci$IF_TRUE
+@Main.fibonacci$IF_TRUE
 D;JNE
 //Goto
 @Main.fibonacci$IF_FALSE

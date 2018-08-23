@@ -312,7 +312,7 @@ public class CodeWriter {
 		if(this.function_name==null) { //if the code it's not in a function
 			label = "@"+this.file_name+"."+label;
 		}else {
-			label = "@"+this.file_name+"."+this.function_name+"$"+label;
+			label = "@"+this.function_name+"$"+label;
 		}
 		String[] code = {"//If-goto", SP, "AM=M-1", "D=M", label, "D;JNE"};
 		try {
