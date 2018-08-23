@@ -6,7 +6,7 @@ import java.io.IOException;
 public class CodeWriter {
 	
 	private BufferedWriter file = null;
-	private String file_name; //without extension
+	private String file_name; //name of the current processes file, without extension
 	private String function_name = null;
 	
 	/*STACK POINTER*/
@@ -58,11 +58,12 @@ public class CodeWriter {
 	
 	/**
 	 * Opens the output file and gets ready to write into it
-	 * @param file_name
+	 * @param output_name: name of the output file, is equal to file_name if there is only one file
+	 * @param file_name: name of the file the Parser is reading
 	 */
-	public CodeWriter(String file_name) {
+	public CodeWriter(String output_name, String file_name) {
 		try {
-			this.file = new BufferedWriter(new FileWriter(file_name));
+			this.file = new BufferedWriter(new FileWriter(output_name));
 		} catch (IOException e) {
 			System.out.println("ERROR: Output can't be used or created");
 		}		
@@ -86,7 +87,7 @@ public class CodeWriter {
 		if(this.function_name==null){
 			conditional_label = this.file_name+"."+conditional_label;
 		}else {
-			conditional_label = this.file_name+"."+this.function_name+"$"+conditional_label;
+			conditional_label = this.function_name+"$"+conditional_label;
 		}
 		
 		switch(command) {
@@ -252,8 +253,10 @@ public class CodeWriter {
 	 * the VM. THis code must be placed at the beginning of the generated *.asm file.
 	 */
 	public void writeInit() {
-		String[] bootstrap_code = {"//BootStrap Code", "@256", "D=A", SP, "M=D", "@Sys.init", "D;JMP"};
+		this.function_name = "Bootstrap";
+		String[] bootstrap_code = {"//BootStrap Code", "@256", "D=A", SP, "M=D"};
 		this.writeString(bootstrap_code);
+		this.writeCall("Sys.init", "0");
 		
 	}
 	

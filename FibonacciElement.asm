@@ -3,8 +3,57 @@
 D=A
 @SP
 M=D
+//Call Sys.init 0
+@Bootstrap$ret.1
+D=A
+@SP
+A=M
+M=D
+@SP
+M=M+1
+@LCL
+D=M
+@SP
+A=M
+M=D
+@SP
+M=M+1
+@ARG
+D=M
+@SP
+A=M
+M=D
+@SP
+M=M+1
+@THIS
+D=M
+@SP
+A=M
+M=D
+@SP
+M=M+1
+@THAT
+D=M
+@SP
+A=M
+M=D
+@SP
+M=M+1
+@SP
+D=M
+@5
+D=D-A
+@0
+D=D-A
+@ARG
+M=D
+@SP
+D=M
+@LCL
+M=D
 @Sys.init
 D;JMP
+(Bootstrap$ret.1)
 //Function Main.fibonacci 0
 (Main.fibonacci)
 //Push argument 0
@@ -34,12 +83,12 @@ D=M
 AM=M-1
 D=M-D
 M=0
-@FibonacciElement.Main.fibonacci$LABEL_0
+@Main.fibonacci$LABEL_0
 D;JGE
 @SP
 A=M
 M=-1
-(FibonacciElement.Main.fibonacci$LABEL_0)
+(Main.fibonacci$LABEL_0)
 @SP
 M=M+1
 //If-goto
@@ -168,7 +217,7 @@ AM=M-1
 D=M
 A=A-1
 M=M-D
-//Call Main.fibonacci 1  
+//Call Main.fibonacci 1
 @Main.fibonacci$ret.1
 D=A
 @SP
@@ -208,7 +257,7 @@ M=M+1
 D=M
 @5
 D=D-A
-@1  
+@1
 D=D-A
 @ARG
 M=D
@@ -244,7 +293,7 @@ AM=M-1
 D=M
 A=A-1
 M=M-D
-//Call Main.fibonacci 1  
+//Call Main.fibonacci 1
 @Main.fibonacci$ret.2
 D=A
 @SP
@@ -284,7 +333,7 @@ M=M+1
 D=M
 @5
 D=D-A
-@1  
+@1
 D=D-A
 @ARG
 M=D
@@ -388,7 +437,7 @@ A=M
 M=D
 @SP
 M=M+1
-//Call Main.fibonacci 1   
+//Call Main.fibonacci 1
 @Sys.init$ret.1
 D=A
 @SP
@@ -428,7 +477,7 @@ M=M+1
 D=M
 @5
 D=D-A
-@1   
+@1
 D=D-A
 @ARG
 M=D

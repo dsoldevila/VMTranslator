@@ -55,12 +55,11 @@ public class VMTranslator {
 		if(this.is_file || this.is_directory) {
 			
 			Parser Par = new Parser(this.file_full_paths[0]); 
-			CodeWriter Writer = new CodeWriter(this.out_file_name);
+			CodeWriter Writer = new CodeWriter(this.out_file_name, this.file_names[0]);
 			this.writeFile(Par, Writer);
 			
 			int j = 1;
 			int len = this.file_full_paths.length;
-			System.out.println("NUMBER OF FILES: "+len);
 			while(j<len) {    //if there is more than one file
 				Par.close();
 				Par = new Parser(this.file_full_paths[j]);

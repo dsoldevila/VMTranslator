@@ -183,7 +183,7 @@ public class Parser {
 			temp = this.current_command.substring(this.current_command.indexOf(" ")+1);
 			temp = temp.substring(temp.indexOf(" ")+1);
 			if(temp.contains("/")) //if it has a comment
-				temp = temp.substring(0, temp.indexOf("/"));
+				temp = temp.substring(0, temp.indexOf(" ")); //if there is a comment there is a whitespace between
 		}
 		return temp;
 	}
